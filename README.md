@@ -12,10 +12,11 @@ conda env create -f environment.yml
 ```
 ## Train Sentence Classifiers
 
-You can run the following command to train a classifier: 
+You can run the following command to train and test the LLM-SSC model using the dataset BIORC800: 
 
 ```
-python main.py --input_view_augmentation_file="data/promda_input_view.txt" --output_view_augmentation_file="data/promda_output_view.txt" --bert_model="microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext" --train_set="data/train.csv" --test_set="data/test.csv" --dev_set="data/dev.csv" --fine_coarse="coarse" --target_number_augmentation=70 --augmentation_mode="PromDA output-view" --eda_augmentation_file="data/EDA_augmentation.txt" --batch_size=2 --max_length=512 --num_epochs=20 --grad_acu_steps=4 --learning_rate=1e-5 --default_threshold=0.5 --save_prediction=1 --thresholds_multi_label=True --train=True  --checkpoint="checkpoint_5/coarse_promda_output_view_1.pth" 
+python .\prompt_learning\peft_tuning_with_space_thinking_with_no_additional_info.py --start_from_memory_bank_path="biorc800_best.pickle" --contrastive_mode=“weighcon”
+
 ```
 
 To use different augmentation mode, you can specify the augmentation mode in the "augmentation_mode" parameter (choose from EDA, Oversampling, PromDA input-view, and PromDA output-view).
