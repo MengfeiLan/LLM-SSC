@@ -1,7 +1,7 @@
-# Self-acknolwedge Kimitation Type Classification
+# LLm-SSC
 This repository is the official implementation of [Multi-label Sequential Sentence Classification via Large Language Model](https://www.sciencedirect.com/science/article/pii/S1532046424000467).
 
-![Alt text](graphical_abstract.png) (EMLNP 2024 Findings)
+![Alt text](overall_llm-ssc.png) (EMLNP 2024 Findings)
 
 
 ## Environment
