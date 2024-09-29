@@ -82,7 +82,6 @@ def load_json(text_dir):
 def construct_dataset_train(paragraph, true_labels, model_retrieve, retrieve_df_train, dataset):
     if dataset == "biorc800":
         dataset_items = []
-        note = "Note that in the paragraph, the first several sentences might play a rhetorical role as background or objective, the middle several sentences might play a rhetorical role as methods or resutls, and the last several sentences might play a rhetorical role as conclusion. "
 
         whole_paragraph = " ".join(paragraph)
 
@@ -125,7 +124,7 @@ def load_data(config, model_retrieve, mode, retrieve_df_train):
     return df
 
 
-def preprocess_function(examples, note, dataset, tokenizer, max_length, labels_to_ids, config):
+def preprocess_function(examples, dataset, tokenizer, max_length, labels_to_ids, config):
     label_space = len(labels_to_ids)
     batch_size = len(examples["sentences"])
     model_inputs = {}
@@ -447,19 +446,8 @@ def train_llm(config):
         zip(data_train["abstract_id"].to_list(), data_train["text"].to_list(), data_train["labels"].to_list(),
             paragraph_train), columns=['abstract_id', "sentences", "labels", 'paragraph_train'])
     model_retrieve.build_index(paragraph_train)
-    if config.dataset == "csabstruct":
-        labels_to_ids = {"background": 0, "objective": 1, "method": 2, "result": 3, "other": 4}
-    elif config.dataset in ["biorc800"]:
+    if config.dataset in ["biorc800"]:
         labels_to_ids = {"background": 0, "objective": 1, "method": 2, "result": 3, "conclusion": 4, "other": 5}
-
-    if config.dataset in ["biorc800", "csabstract"]:
-        note = "Note that in the paragraph, the first several sentences might play a rhetorical role as background or objective, the middle several sentences might play a rhetorical role as methods or resutls, and the last several sentences might play a rhetorical role as conclusions. "
-    elif config.dataset == "csabstruct":
-        note = "Note that in the paragraph, the first several sentences might play a rhetorical role as background or objective, the middle several sentences might play a rhetorical role as method, and the last several sentences might play a rhetorical role as result. "
-    elif config.dataset == "nicta_piboso":
-        note = "Note that in the paragraph, the first several sentences might play a rhetorical role as background, the middle several sentences might play a rhetorical role as population or intervention, and the last several sentences might play a rhetorical role as outcome. "
-    elif config.dataset == "pubmed_20k":
-        note = "Note that in the paragraph, the first several sentences might play a rhetorical role as background or objective, the middle several sentences might play a rhetorical role as methods or resutls, and the last several sentences might play a rhetorical role as conclusions. "
 
     train_df = load_data(config, model_retrieve, "train", retrieve_df_train)
     val_df = load_data(config, model_retrieve, "dev", retrieve_df_train)
@@ -475,7 +463,7 @@ def train_llm(config):
 
 
     train_processed_dataset = train_dataset.map(
-        lambda batch: preprocess_function(batch, note, config.dataset, tokenizer, config.max_length, labels_to_ids, config),
+        lambda batch: preprocess_function(batch, config.dataset, tokenizer, config.max_length, labels_to_ids, config),
         batched=True,
         num_proc=1,
         load_from_cache_file=False,
@@ -483,7 +471,7 @@ def train_llm(config):
         desc="Running tokenizer on dataset",
     )
     val_processed_dataset = val_dataset.map(
-        lambda batch: preprocess_function(batch, note, config.dataset, tokenizer, config.max_length, labels_to_ids, config),
+        lambda batch: preprocess_function(batch, config.dataset, tokenizer, config.max_length, labels_to_ids, config),
         batched=True,
         num_proc=1,
         load_from_cache_file=False,
@@ -491,7 +479,7 @@ def train_llm(config):
         desc="Running tokenizer on dataset",
     )
     test_processed_dataset = test_dataset.map(
-        lambda batch: preprocess_function(batch, note, config.dataset, tokenizer, config.max_length, labels_to_ids, config),
+        lambda batch: preprocess_function(batch, config.dataset, tokenizer, config.max_length, labels_to_ids, config),
         batched=True,
         num_proc=1,
         load_from_cache_file=False,
