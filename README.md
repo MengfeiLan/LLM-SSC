@@ -1,7 +1,7 @@
 # LLm-SSC
-This repository is the official implementation of [Multi-label Sequential Sentence Classification via Large Language Model](https://www.sciencedirect.com/science/article/pii/S1532046424000467).
+This repository is the official implementation of [Multi-label Sequential Sentence Classification via Large Language Model](https://www.sciencedirect.com/science/article/pii/S1532046424000467) (EMLNP 2024 Findings) .
 
-![Alt text](overview_llm-ssc.png) (EMLNP 2024 Findings)
+![Alt text](overview_llm-ssc.png) 
 
 
 ## Environment
