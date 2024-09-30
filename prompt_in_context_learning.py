@@ -506,7 +506,7 @@ if __name__ == '__main__':
     parser.add_argument('--num_generate_tokens', type=int, default=2,
                         help='number of the generated tokens')
 
-    parser.add_argument('--max_length', type=int, default=1500,
+    parser.add_argument('--max_length', type=int, default=8192,
                         help='maximum input length')
 
     parser.add_argument('--dataset', type=str, default="csabstract",
@@ -521,7 +521,7 @@ if __name__ == '__main__':
     parser.add_argument('--num_epochs', type=int, default=10,
                         help='number of epochs')
 
-    parser.add_argument('--bank_size', type=int, default=3500,
+    parser.add_argument('--bank_size', type=int, default=2000,
                         help='memory bank size')
 
     parser.add_argument('--default_threshold', type=float, default=0.4,
