@@ -703,7 +703,7 @@ if __name__ == '__main__':
     parser.add_argument('--num_generate_tokens', type=int, default=2,
                         help='number of the generated tokens')
 
-    parser.add_argument('--max_length', type=int, default=1000,
+    parser.add_argument('--max_length', type=int, default=1200,
                         help='maximum input length')
 
     parser.add_argument('--dataset', type=str, default="biorc800",
