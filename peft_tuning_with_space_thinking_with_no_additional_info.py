@@ -238,7 +238,7 @@ def preprocess_function(examples, note, dataset, tokenizer, max_length, labels_t
         labels = examples["labels"][i]
         whole_paragraph = " ".join(inputs)
         if config.with_illustration == True:
-            if dataset in ["biorc_500", "csabstract"]:
+            if dataset in ["csabstract"]:
                 query = samples + "<Start> The paragraph is \"" + whole_paragraph + "\". Select from rhetorical labels including background, objective, method, result and conclusion"
             elif dataset == "csabstruct":
                 query = samples + "<Start> The paragraph is \"" + whole_paragraph + "\". Select from rhetorical labels including background, objective, method, result, and other"
@@ -250,7 +250,7 @@ def preprocess_function(examples, note, dataset, tokenizer, max_length, labels_t
                 query = samples + "<Start> The paragraph is \"" + whole_paragraph + "\". Select from rhetorical labels including background, motivation, hypothesis, goal, objective, method, observation, result, experiment, conclusion"
 
         else:
-            if dataset in ["biorc_500", "csabstract"]:
+            if dataset in ["csabstract"]:
                 query = "The paragraph is \"" + whole_paragraph + "\". Select from rhetorical labels including background, objective, method, result and conclusion"
             elif dataset == "csabstruct":
                 query = "The paragraph is \"" + whole_paragraph + "\". Select from rhetorical labels including background, objective, method, result, and other"
@@ -847,7 +847,7 @@ if __name__ == '__main__':
     parser.add_argument('--num_generate_tokens', type=int, default=2,
                         help='number of the generated tokens')
 
-    parser.add_argument('--max_length', type=int, default=1000,
+    parser.add_argument('--max_length', type=int, default=1200,
                         help='maximum input length')
 
     parser.add_argument('--dataset', type=str, default="pubmed_20k",
