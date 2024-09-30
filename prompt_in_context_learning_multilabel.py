@@ -160,11 +160,6 @@ def construct_dataset_single(data, model_retrieve, retrieve_df_train, dataset):
 def map_to_normal(s1, dataset):
     # for candidates in ["background", "objective", "method", "result", "conclusion", "other"]:
     labels = []
-    if dataset == "csabstract":
-        for candidates in ["background", "objective", "method", "result", "conclusion", "other"]:
-            if candidates in s1.lower() or candidates == s1:
-                labels.append(candidates)
-        return ["background"]
     if dataset == "biorc800":
         for candidates in ["background", "objective", "method", "result", "conclusion", "other"]:
             if candidates in s1.lower() or candidates == s1:
@@ -173,14 +168,6 @@ def map_to_normal(s1, dataset):
             return ["background"]
         else:
             return labels
-    if dataset == "nicta_piboso":
-        for candidates in ["background", "study", "population", "intervention", "outcome", "other"]:
-            if candidates in s1.lower() or candidates == s1:
-                if candidates == "study":
-                    candidates = "study design"
-                return candidates
-        return ["background"]
-
 def load_data(config, model_retrieve, mode, retrieve_df_train):
     data = load_json("data_llm/" + config.dataset + "/" + mode + ".jsonl")
     data = data
@@ -230,28 +217,12 @@ def preprocess_function(model, test_df, note, dataset, tokenizer, max_length, la
         labels = i["labels"]
         whole_paragraph = " ".join(inputs)
         if config.with_illustration == True:
-            if dataset in ["biorc800", "csabstract"]:
-                query = samples + "<Start> The paragraph is \"" + whole_paragraph + "\". Select from rhetorical labels including background, objective, method, result and conclusion"
-            elif dataset == "csabstruct":
-                query = samples + "<Start> The paragraph is \"" + whole_paragraph + "\". Select from rhetorical labels including background, objective, method, result, and other"
-            elif dataset == "nicta_piboso":
-                query = samples + "<Start> The paragraph is \"" + whole_paragraph + "\". Select from rhetorical labels including background, study desgin, population, intervention, outcome, and other"
-            elif dataset == "pubmed_20k":
+            if dataset in ["biorc800"]:
                 query = samples + "<Start> The paragraph is \"" + whole_paragraph + "\". Select from rhetorical labels including background, objective, method, result and conclusion"
 
         else:
-            if dataset in ["biorc800", "csabstract"]:
+            if dataset in ["biorc800"]:
                 query = "The paragraph is \"" + whole_paragraph + "\". Select from rhetorical labels including background, objective, method, result and conclusion"
-            elif dataset == "csabstruct":
-                query = "The paragraph is \"" + whole_paragraph + "\". Select from rhetorical labels including background, objective, method, result, and other"
-            elif dataset == "csabstract":
-                query = "The paragraph is \"" + whole_paragraph + "\". Select from rhetorical labels including background, objective, method, result and conclusion"
-            elif dataset == "nicta_piboso":
-                query = "The paragraph is \"" + whole_paragraph + "\". Select from rhetorical labels including background, study desgin, population, intervention, outcome, and other"
-            elif dataset == "pubmed_20k":
-                query = "The paragraph is \"" + whole_paragraph + "\". Select from rhetorical labels including background, objective, method, result and conclusion"
-            elif dataset == "art_coresc":
-                query = "The paragraph is \"" + whole_paragraph + "\". Select from rhetorical labels including background, motivation, hypothesis, goal, objective, method, observation, result, experiment, conclusion"
 
         if sequential_prompt == True:
             tokenized_text = tokenizer.tokenize(query)
@@ -353,25 +324,13 @@ def train_llm(config):
         zip(data_train["abstract_id"].to_list(), data_train["text"].to_list(), data_train["labels"].to_list(),
             paragraph_train), columns=['abstract_id', "sentences", "labels", 'paragraph_train'])
     model_retrieve.build_index(paragraph_train)
-    if config.dataset == "csabstruct":
-        labels_to_ids = {"background": 0, "objective": 1, "method": 2, "result": 3, "other": 4}
-    elif config.dataset in ["biorc800"]:
-        labels_to_ids = {"background": 0, "objective": 1, "method": 2, "result": 3, "conclusion": 4, "other": 5}
-    elif config.dataset == "csabstract":
-        labels_to_ids = {"background": 0, "objective": 1, "method": 2, "result": 3, "conclusion": 4}
-    elif config.dataset == "nicta_piboso":
-        labels_to_ids = {"background": 0, "study design": 1, "population": 2, "intervention": 3, "outcome": 4, "other": 5}
-    elif config.dataset == "pubmed_20k":
-        labels_to_ids = {"background": 0, "objective": 1, "method": 2, "result": 3, "conclusion": 4}
 
-    if config.dataset in ["biorc800", "csabstract"]:
+    if config.dataset in ["biorc800"]:
+        labels_to_ids = {"background": 0, "objective": 1, "method": 2, "result": 3, "conclusion": 4, "other": 5}
+
+
+    if config.dataset in ["biorc800"]:
         note = "Note that in the paragraph, the first several sentences might play a rhetorical role as background or objective, the middle several sentences might play a rhetorical role as methods or resutls, and the last several sentences might play a rhetorical role as conclusions. "
-    elif config.dataset == "csabstruct":
-        note = "Note that in the paragraph, the first several sentences might play a rhetorical role as background or objective, the middle several sentences might play a rhetorical role as method, and the last several sentences might play a rhetorical role as result. "
-    elif config.dataset == "nicta_piboso":
-        note = "Note that in the paragraph, the first several sentences might play a rhetorical role as background, the middle several sentences might play a rhetorical role as population or intervention, and the last several sentences might play a rhetorical role as outcome. "
-    elif config.dataset == "pubmed_20k":
-        note = "Note that in the paragraph, the first several sentences might play a rhetorical role as background or objective, the middle several sentences might play a rhetorical role as method, and the last several sentences might play a rhetorical role as result. "
 
     test_df = load_data(config, model_retrieve, "test", retrieve_df_train)
 
