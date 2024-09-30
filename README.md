@@ -15,7 +15,7 @@ conda env create -f environment.yml
 You can run the following command to test the multi-label in-context learning for sequential sentence classification using the dataset BIORC800: 
 
 ```
-python .\prompt_learning\prompt_in_context_learning_multilabel.py
+python .\prompt_in_context_learning_multilabel.py
 ```
 To use different number of shots, you can specify the "sample_count" parameter. 
 
@@ -24,7 +24,7 @@ To use different number of shots, you can specify the "sample_count" parameter.
 You can run the following command to test the single-label in-context learning for sequential sentence classification using the dataset CS-ABSTRACT. Please download the CS-ABSTRACT dataset, change the data format, and put the dataset under the dataset_llm directory before running the following command: 
 
 ```
-python .\prompt_learning\prompt_in_context_learning.py
+python .\prompt_in_context_learning.py
 ```
 To use different number of shots, you can specify the "sample_count" parameter. To use other single-label sequential sentence classification datasets, you can specify the "--dataset" parameter (choose from csabstract, pubmed_20k, and art_coresc) and the "--start_from_memory_bank_path" parameter. 
 
@@ -34,7 +34,7 @@ To use different number of shots, you can specify the "sample_count" parameter. 
 You can run the following command to train and test the muli-label LLM-SSC model using the dataset BIORC800: 
 
 ```
-python .\prompt_learning\peft_tuning_with_space_thinking_with_no_additional_info_multi_label.py --start_from_memory_bank_path="biorc800_best.pickle" --contrastive_mode=“weighcon”
+python .\peft_tuning_with_space_thinking_with_no_additional_info_multi_label.py --start_from_memory_bank_path="biorc800_best.pickle" --contrastive_mode=“weighcon”
 ```
 
 To use different contrastive learning loss, you can specify the "contrastive_mode" parameter (choose from weighcon and herocon).
@@ -44,7 +44,7 @@ To use different contrastive learning loss, you can specify the "contrastive_mod
 You can run the following command to train and test the muli-label LLM-SSC model using the dataset CS-ABSTRACT. Please download the CS-ABSTRACT dataset, change the data format, and put the dataset under the dataset_llm directory before running the following command: 
 
 ```
-python .\prompt_learning\peft_tuning_with_space_thinking_with_no_additional_info.py --start_from_memory_bank_path=“csabstract_best.pickle" --start_from_memory_bank=True --contrastive_mode=“herocon” 
+python .\peft_tuning_with_space_thinking_with_no_additional_info.py --start_from_memory_bank_path=“csabstract_best.pickle" --start_from_memory_bank=True --contrastive_mode=“herocon” 
 ```
 
 To use other single-label sequential sentence classification datasets, you can specify the "--dataset" parameter (choose from csabstract, pubmed_20k, and art_coresc) and the "--start_from_memory_bank_path" parameter. 
