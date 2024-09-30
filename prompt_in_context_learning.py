@@ -144,9 +144,6 @@ def construct_dataset_train(paragraph, true_labels, model_retrieve, retrieve_df_
         # illustrations = "<Start> " + note
         sample_count = 0
         illustrations = "<Start> "
-        if len(results) == 0:
-            print("results == 0")
-            print(whole_paragraph)
 
         for i in results:
             if len(i[0].split(" ")) > 120:
@@ -180,9 +177,6 @@ def construct_dataset_train(paragraph, true_labels, model_retrieve, retrieve_df_
         sample_count = 0
         illustrations = "<Start> "
         if config.sample_count > 0:
-            if len(results) == 0:
-                print("results == 0")
-                print(whole_paragraph)
 
             for i in results:
                 if len(i[0].split(" ")) > 180:
@@ -406,11 +400,8 @@ def preprocess_function(model, test_df, note, dataset, tokenizer, max_length, la
                 tokenized_text = tokenizer.tokenize(query_single_sentence)
                 single_sentence_ids = tokenizer.convert_tokens_to_ids(tokenized_text)
                 input_ids = input_ids_initial + single_sentence_ids
-                attention_mask = attention_mask_initial + [1] * len(single_sentence_ids)
-
-                all_input_ids = [tokenizer.pad_token_id] * (max_length - len(input_ids)) + input_ids
                 input_text = tokenizer.decode(input_ids)
-                print("input_text: ", input_text)
+                # print("input_text: ", input_text)
 
                 if len(input_ids) > max_length:
                     long_seq_count += 1
@@ -422,7 +413,6 @@ def preprocess_function(model, test_df, note, dataset, tokenizer, max_length, la
                 outputs = model.generate(**inputs, max_new_tokens=3)
                 outputs = outputs.to("cpu")
                 pred_label = str(tokenizer.batch_decode(outputs, skip_special_tokens=True))[-20:]
-                print(pred_label)
                 pred_label = map_to_normal(pred_label, dataset)
                 pred_labels.append([pred_label])
                 gold_labels.append(label)
@@ -482,15 +472,6 @@ def train_llm(config):
     model = model.to(device)
 
     gold_labels, pred_labels = preprocess_function(model, test_df, note, config.dataset, tokenizer, config.max_length, labels_to_ids, config, device)
-
-    print("gold_labels: ", gold_labels)
-    print("pred_labels: ", pred_labels)
-    early_stopper = EarlyStopper(patience=3, min_delta=10)
-
-    # optimizer and lr scheduler
-    optimizer = torch.optim.AdamW(model.parameters(), lr=config.lr)
-    # optimizer = torch.optim.SGD(model.parameters(), lr=config.lr, momentum=0.75)
-
 
     precision_micro, recall_micro, f1_score_micro, precision_macro, recall_macro, f1_score_macro, precision_weighted, recall_weighted, f1_score_weighted, classification_report_ = evaluation(gold_labels, pred_labels)
     # precision_micro, recall_micro, f1_score_micro, precision_macro, recall_macro, f1_score_macro, precision_weighted, recall_weighted, f1_score_weighted, classification_report_ = evaluation_single_label(all_val_labels, all_val_outputs)
