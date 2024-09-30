@@ -12,13 +12,13 @@ conda env create -f environment.yml
 ```
 ## Train Sentence Classifiers
 
-You can run the following command to train and test the LLM-SSC model using the dataset BIORC800. : 
+You can run the following command to train and test the LLM-SSC model using the dataset BIORC800: 
 
 ```
 python .\prompt_learning\peft_tuning_with_space_thinking_with_no_additional_info.py --start_from_memory_bank_path="biorc800_best.pickle" --contrastive_mode=“weighcon”
 ```
 
-To use different augmentation mode, you can specify the augmentation mode in the "augmentation_mode" parameter (choose from EDA, Oversampling, PromDA input-view, and PromDA output-view).
+To use different contrastive learning loss, you can specify the "contrastive_mode" parameter (choose from weighcon and herocon).
 
 ## Test Sentence Classifiers
 
