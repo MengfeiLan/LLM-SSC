@@ -10,22 +10,41 @@ Create a conda environment by:
 ```
 conda env create -f environment.yml
 ```
-## Train Sentence Classifiers
+## In-context learning for sequential sentence classification - multi-label
 
-You can run the following command to train and test the LLM-SSC model using the dataset BIORC800: 
+You can run the following command to test the multi-label in-context learning for sequential sentence classification using the dataset BIORC800: 
 
 ```
-python .\prompt_learning\peft_tuning_with_space_thinking_with_no_additional_info.py --start_from_memory_bank_path="biorc800_best.pickle" --contrastive_mode=“weighcon”
+python .\prompt_learning\prompt_in_context_learning_multilabel.py
+```
+To use different number of shots, you can specify the "sample_count" parameter. 
+
+## In-context learning for sequential sentence classification - single-label
+
+You can run the following command to test the single-label in-context learning for sequential sentence classification using the dataset CS-ABSTRACT. Please download the CS-ABSTRACT dataset, change the format, and put the dataset under the dataset_llm directory before running the following command: 
+
+```
+python .\prompt_learning\prompt_in_context_learning.py
+```
+To use different number of shots, you can specify the "sample_count" parameter. To use other single-label sequential sentence classification datasets, you can specify the "--dataset" parameter (choose from csabstract, pubmed_20k, and art_coresc) and the "--start_from_memory_bank_path" parameter. 
+
+
+## Train multi-label sequential sentence Classifier
+
+You can run the following command to train and test the muli-label LLM-SSC model using the dataset BIORC800: 
+
+```
+python .\prompt_learning\peft_tuning_with_space_thinking_with_no_additional_info_multi_label.py --start_from_memory_bank_path="biorc800_best.pickle" --contrastive_mode=“weighcon”
 ```
 
 To use different contrastive learning loss, you can specify the "contrastive_mode" parameter (choose from weighcon and herocon).
 
-## Test Sentence Classifiers
+## Train single-label sequential sentence Classifier
 
-We provide the checkpoint yielded by the PromDA Output-view augmentation (best performed): [link](https://drive.google.com/drive/folders/1Rv4yhB76HLGeezWH4RUdxNcNipwRn-0k?usp=sharing). To use the checkpoint, you can download the checkpoint and the multi-thresholds file, specify the prediction target data file, then run the following command:
+You can run the following command to train and test the muli-label LLM-SSC model using the dataset CS-ABSTRACT. Please download the CS-ABSTRACT dataset, change the format, and put the dataset under the dataset_llm directory before running the following command: 
 
 ```
-python main.py --input_view_augmentation_file="data/promda_input_view.txt" --output_view_augmentation_file="data/promda_output_view.txt" --bert_model="microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext" --test_set="limitation_identification/all_limitation_data.csv" --fine_coarse="coarse" --target_number_augmentation=70 --augmentation_mode="PromDA output-view" --eda_augmentation_file="data/EDA_augmentation.txt" --batch_size=2 --max_length=512 --num_epochs=20 --grad_acu_steps=4 --learning_rate=1e-5 --default_threshold=0.4 --checkpoint="checkpoint_5/coarse_promda_output_view_1.pth" --save_prediction=1 --thresholds_multi_label=True --from_pretrain=True
+python .\prompt_learning\peft_tuning_with_space_thinking_with_no_additional_info.py --start_from_memory_bank_path=“csabstract_best.pickle" --start_from_memory_bank=True --contrastive_mode=“herocon” 
 ```
 
-After running the command, a prediction file (e.g. "coarse_promda_output_view_1.csv") for the test set is created under the checkpoint folder. 
+To use other single-label sequential sentence classification datasets, you can specify the "--dataset" parameter (choose from csabstract, pubmed_20k, and art_coresc) and the "--start_from_memory_bank_path" parameter. 
