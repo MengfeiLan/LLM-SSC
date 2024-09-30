@@ -410,7 +410,7 @@ if __name__ == '__main__':
 
     parser.add_argument("--update_memory_bank_steps", type=int, default=50000)
 
-    parser.add_argument("--sample_count", type=int, default=10)
+    parser.add_argument("--sample_count", type=int, default=5)
 
     config = parser.parse_args()
     print("config", config)
