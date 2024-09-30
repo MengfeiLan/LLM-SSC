@@ -399,7 +399,7 @@ if __name__ == '__main__':
     parser.add_argument('--num_epochs', type=int, default=10,
                         help='number of epochs')
 
-    parser.add_argument('--bank_size', type=int, default=2500,
+    parser.add_argument('--bank_size', type=int, default=2000,
                         help='memory bank size')
 
     parser.add_argument('--default_threshold', type=float, default=0.4,
