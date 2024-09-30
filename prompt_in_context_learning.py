@@ -49,7 +49,7 @@ def load_json(text_dir):
     return pubmed_df
 
 def construct_dataset_train(paragraph, true_labels, model_retrieve, retrieve_df_train, dataset):
-    if dataset in ["biorc_500", "csabstract"]:
+    if dataset in ["csabstract"]:
         dataset_items = []
         note = "Note that in the paragraph, the first several sentences might play a rhetorical role as background or objective, the middle several sentences might play a rhetorical role as methods or resutls, and the last several sentences might play a rhetorical role as conclusion. "
         sample_count = 0
@@ -330,7 +330,7 @@ def preprocess_function(model, test_df, note, dataset, tokenizer, max_length, la
         labels = i["labels"]
         whole_paragraph = " ".join(inputs)
         if config.with_illustration == True:
-            if dataset in ["biorc_500", "csabstract"]:
+            if dataset in ["csabstract"]:
                 query = samples + "<Start> The paragraph is \"" + whole_paragraph + "\". Select from rhetorical labels including background, objective, method, result and conclusion"
             elif dataset == "csabstruct":
                 query = samples + "<Start> The paragraph is \"" + whole_paragraph + "\". Select from rhetorical labels including background, objective, method, result, and other"
@@ -342,7 +342,7 @@ def preprocess_function(model, test_df, note, dataset, tokenizer, max_length, la
                 query = samples + "<Start> The paragraph is \"" + whole_paragraph + "\". Select from rhetorical labels including background, motivation, hypothesis, goal, objective, method, observation, result, experiment, conclusion"
 
         else:
-            if dataset in ["biorc_500", "csabstract"]:
+            if dataset in ["csabstract"]:
                 query = "The paragraph is \"" + whole_paragraph + "\". Select from rhetorical labels including background, objective, method, result and conclusion"
             elif dataset == "csabstruct":
                 query = "The paragraph is \"" + whole_paragraph + "\". Select from rhetorical labels including background, objective, method, result, and other"
@@ -443,8 +443,6 @@ def train_llm(config):
     model_retrieve.build_index(paragraph_train)
     if config.dataset == "csabstruct":
         labels_to_ids = {"background": 0, "objective": 1, "method": 2, "result": 3, "other": 4}
-    elif config.dataset in ["biorc_500"]:
-        labels_to_ids = {"background": 0, "objective": 1, "method": 2, "result": 3, "conclusion": 4, "other": 5}
     elif config.dataset == "csabstract":
         labels_to_ids = {"background": 0, "objective": 1, "method": 2, "result": 3, "conclusion": 4}
     elif config.dataset == "nicta_piboso":
@@ -454,7 +452,7 @@ def train_llm(config):
     elif config.dataset == "art_coresc":
         labels_to_ids = {"background": 0, "motivation": 1, "hypothesis": 2, "goal": 3, "objective": 4, "method": 5, "result": 6, "experiment": 7, "observation":8, "conclusion": 9}
 
-    if config.dataset in ["biorc_500", "csabstract"]:
+    if config.dataset in ["csabstract"]:
         note = "Note that in the paragraph, the first several sentences might play a rhetorical role as background or objective, the middle several sentences might play a rhetorical role as methods or resutls, and the last several sentences might play a rhetorical role as conclusions. "
     elif config.dataset == "csabstruct":
         note = "Note that in the paragraph, the first several sentences might play a rhetorical role as background or objective, the middle several sentences might play a rhetorical role as method, and the last several sentences might play a rhetorical role as result. "
@@ -534,7 +532,7 @@ if __name__ == '__main__':
 
     parser.add_argument("--update_memory_bank_steps", type=int, default=50000)
 
-    parser.add_argument("--sample_count", type=int, default=0)
+    parser.add_argument("--sample_count", type=int, default=5)
 
     config = parser.parse_args()
     print("config", config)
